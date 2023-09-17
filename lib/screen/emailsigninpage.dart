@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:quiz_app/services/auth.dart';
+import 'package:quiz_app/screen/emailloginpage.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/hex_color.dart';
 
@@ -216,7 +216,7 @@ class _EmailSigninPageState extends State<EmailSigninPage> {
                       children:<TextSpan> [
                         const TextSpan(text: "Have an account?  "),
                         TextSpan(text: "Login", style: TextStyle(color: Colors.white.withOpacity(0.6)),recognizer: TapGestureRecognizer()..onTap =(){
-                          Navigator.pushNamed(context, 'emailloginpage');
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const EmailLoginPage(),));
                         }),
                       ]
                   )),

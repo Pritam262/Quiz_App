@@ -1,11 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/models/login_request_model.dart';
+import 'package:quiz_app/screen/emailsigninpage.dart';
 import 'package:quiz_app/services/auth.dart';
+import 'package:quiz_app/services/shared_service.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/hex_color.dart';
 
 import '../config.dart';
+import 'home.dart';
 
 class EmailLoginPage extends StatefulWidget {
   const EmailLoginPage({super.key});
@@ -17,10 +20,12 @@ class EmailLoginPage extends StatefulWidget {
 class _EmailLoginPageState extends State<EmailLoginPage> {
   bool isHide = true;
   bool isApiCallProcess = false;
+  GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   late String? email;
   late String? password;
   late TextEditingController emailController = TextEditingController();
   late TextEditingController passController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -162,7 +167,32 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: FormHelper.submitButton("Login", ()async{
                     // await loginWithEmail(email!, password!);
-                    Navigator.pushNamed(context, 'homepage');
+              /*      if(validateAndSave()){
+                      setState(() {
+                        isApiCallProcess =true;
+                      });*/
+                    // isApiCallProcess= true;
+                      LoginRequestModel model = LoginRequestModel(
+                        email: email,
+                        password: password
+                      );
+                      APIService.loginWithEmail(model).then((response) {
+                        setState(() {
+                          isApiCallProcess= false;
+                        });
+                        if(response) {
+                          // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+                          Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              '/homepage',
+                          (route) => false,);
+                          // Navigator.pushReplacementNamed(context, 'homepage');
+                        }else{
+                          FormHelper.showSimpleAlertDialog(context, Config.appName, "Invalid UserName and Password", "OK", (){Navigator.of(context).pop();});
+                        }
+                      });
+                /*    }*/
+                    // Navigator.pushNamed(context, 'homepage');
                   }, btnColor: HexColor('#283B71'), txtColor: Colors.white, borderRadius: 10),
                 ),
 
@@ -177,7 +207,8 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                     children:<TextSpan> [
                       const TextSpan(text: "Don't have an account?  "),
                       TextSpan(text: "Sign Up", style: TextStyle(color: Colors.white.withOpacity(0.6)),recognizer: TapGestureRecognizer()..onTap =(){
-                        Navigator.pushNamed(context, 'emailsigninpage');
+                        // Navigator.pushNamed(context, 'emailsigninpage');
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => EmailSigninPage(),));
                       }),
                     ]
                   )),
@@ -190,14 +221,13 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
     );
   }
 
-/*  bool validationAndSave(){
+  bool validateAndSave() {
     final form = globalFormKey.currentState;
-    if(form!.validate()){
+    if (form!.validate()) {
       form.save();
       return true;
-    }else{
-      return false;
     }
-  }*/
+    return false;
+  }
 
 }

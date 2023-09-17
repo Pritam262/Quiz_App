@@ -1,3 +1,4 @@
+/*
 class RegisterUserModel {
   RegisterUserModel({
     required this.name,
@@ -20,4 +21,34 @@ class RegisterUserModel {
     );
   }
 
+}
+
+
+*/
+
+
+
+class RegisterUserModel {
+  RegisterUserModel({
+    this.name,
+    this.password,
+    this.email,
+  });
+  late final String? name;
+  late final String? password;
+  late final String? email;
+
+  RegisterUserModel.fromJson(Map<String, dynamic> json) {
+    name = json['username'];
+    password = json['password'];
+    email = json['email'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final _data = <String, dynamic>{};
+    _data['username'] = name;
+    _data['password'] = password;
+    _data['email'] = email;
+    return _data;
+  }
 }

@@ -1,19 +1,33 @@
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:quiz_app/screen/emailloginpage.dart';
-import 'package:quiz_app/screen/emailsigninpage.dart';
 import 'package:quiz_app/screen/home.dart';
 import 'package:quiz_app/screen/login_page.dart';
+import 'package:quiz_app/services/shared_service.dart';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isLogin = false;
+getLoggedInState() async{
+  await (SharedService.isLoggedIn())? isLogin= true: isLogin = false;
+}
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getLoggedInState();
+  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -26,12 +40,10 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         // '/':(context) => const HomePage(),
-        '/':(context) => const LoginPage(),
-        "emailsigninpage":(context) =>const EmailSigninPage(),
-        'emailloginpage':(context) => const EmailLoginPage(),
-        'homepage':(context) => const HomePage(),
-        'loginpage':(context)=> const LoginPage()
+        '/homepage':(context) => const HomePage(),
+        '/loginpage':(context)=> const LoginPage()
       },
+    home: isLogin? const HomePage(): const LoginPage(),
     );
   }
 }

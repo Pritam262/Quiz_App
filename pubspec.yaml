@@ -37,9 +37,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_signin_button:
   shared_preferences:
-  firebase_core:
-  firebase_auth:
-  google_sign_in:
+  #firebase_core:
+  #firebase_auth:
+  #google_sign_in:
   api_cache_manager:
   snippet_coder_utils:
   http: ^1.1.0

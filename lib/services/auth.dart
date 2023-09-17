@@ -1,3 +1,4 @@
+/*
 import 'dart:convert';
 import 'dart:io';
 
@@ -5,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:quiz_app/models/login_request_model.dart';
-import 'package:quiz_app/models/login_user_response_model.dart';
+import 'package:quiz_app/models/authentication_response_model.dart';
 import 'package:quiz_app/models/register_user_model.dart';
 import 'package:quiz_app/config.dart';
 import 'package:quiz_app/models/register_user_response_model.dart';
@@ -36,47 +37,6 @@ Future<User?> signWithGoogle() async {
   }
 }
 
-/*Future<User?> signinWithEmail(RegisterUserModel model)async{
-  var requestHeaders = {
-    'Content-Type':"application/json"
-  };
-*/ /*  Map<String String> requestHeaders = {
-    'Content-Type':"application/json",
-  };*/ /*
-  // var url = Uri.http(Config.apiUrl, Config.registrationApi);
-
-  try{
-    http.post(
-      Uri.parse('127.0.0.1:3000//api/auth/register'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({
-        model,
-      }),
-    );
-    print(http.Response);
-
-  }catch(error){
-    print('Error occured in signWithEmail');
-    print(error);
-  }
-  return null;
-
-}*/
-
-/*
-Future<User?> loginWithEmail(String email, String password)async{
-  try{
-    print('Login credencial---- Email: $email, Password: $password');
-  }catch(error){
-    print('Error occured in signWithEmail');
-    print(error);
-  }
-  return null;
-
-}*/
-
 Future<RegisterUserResponseModel> signinWithEmail(
     RegisterUserModel model) async {
   Map<String, String> header = <String, String>{
@@ -90,17 +50,10 @@ Future<RegisterUserResponseModel> signinWithEmail(
   );
 
   return RegisterUserResponseModel(authtoken: response.body);
-/*  if(response.statusCode == 200){
-    Map resData = jsonDecode(response.body);
-    print(resData);
-    return true;
-  }
-  else{
-    return false;
-  }*/
 }
 
 Future<bool?> loginWithEmail(LoginRequestModel model) async {
+  // print('${model.username}, ${model.password}');
   Map<String, String> header = <String, String>{
     "Content-Type": "application/json"
   };
@@ -120,5 +73,123 @@ Future<bool?> loginWithEmail(LoginRequestModel model) async {
   } else {
     return false;
   }
-  return null;
+
+}
+*/
+
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
+import '../../config.dart';
+import '../models/login_request_model.dart';
+import '../models/authentication_response_model.dart';
+import '../models/register_user_model.dart';
+import 'shared_service.dart';
+
+class APIService {
+
+
+
+
+
+
+
+
+  // LogIn With email or restAPI
+  static var client = http.Client();
+
+  static Future<bool> loginWithEmail(
+    LoginRequestModel model,
+  ) async {
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+    };
+
+    var url = Uri.http(
+      Config.apiUrl,
+      Config.loginApi,
+    );
+// print(model.toJson());
+    var response = await client.post(
+      url,
+      headers: requestHeaders,
+      body: jsonEncode(model.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      await SharedService.setLoginDetails(
+        authResponseJson(
+          response.body,
+        ),
+      );
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+
+
+  // SignIn with Email or RestAPI
+  static Future<bool> registerWithEmail(
+    RegisterUserModel model,
+  ) async {
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+    };
+
+    var url = Uri.http(
+      Config.apiUrl,
+      Config.registrationApi,
+    );
+
+    var response = await client.post(
+      url,
+      headers: requestHeaders,
+      body: jsonEncode(model.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+
+      await SharedService.setLoginDetails(
+        authResponseJson(
+          response.body,
+        ),
+      );
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+
+  // GetUser profile data using RestAPI
+  static Future<String> getUserProfile() async {
+    var loginDetails = await SharedService.loginDetails();
+
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+      'auth-token': '${loginDetails?.data.token}'
+    };
+    var url = Uri.http(Config.apiUrl, Config.getUserApi);
+
+    var response = await client.post(
+      url,
+      headers: requestHeaders,
+    );
+
+    if (response.statusCode == 200) {
+      print('User details: ${response.body}');
+      return response.body;
+    } else {
+      print(response.statusCode);
+      print(response.body);
+      return "";
+    }
+  }
 }
