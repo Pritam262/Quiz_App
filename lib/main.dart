@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/screen/home.dart';
 import 'package:quiz_app/screen/login_page.dart';
 import 'package:quiz_app/services/shared_service.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();
+  databaseFactory = databaseFactoryFfi;
   runApp(const MyApp());
 }
 

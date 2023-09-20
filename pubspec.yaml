@@ -43,6 +43,7 @@ dependencies:
   api_cache_manager:
   snippet_coder_utils:
   http: ^1.1.0
+  sqflite_common_ffi:
 
 
 
