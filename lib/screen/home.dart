@@ -13,13 +13,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Map data;
+
   @override
   Widget build(BuildContext context) {
 
     setState(() {
    APIService.getUserProfile();
-   print(APIService.getUserProfile().toString());
+   print('User Profile Data: ${APIService.getUserProfile().toString()}');
 
     });
     return Scaffold(

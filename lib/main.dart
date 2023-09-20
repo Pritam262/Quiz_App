@@ -19,9 +19,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool isLogin = false;
-getLoggedInState() async{
-  await (SharedService.isLoggedIn())? isLogin= true: isLogin = false;
-}
+  getLoggedInState() async{
+    await (SharedService.isLoggedIn())? isLogin= true: isLogin = false;
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -43,9 +43,8 @@ getLoggedInState() async{
         '/homepage':(context) => const HomePage(),
         '/loginpage':(context)=> const LoginPage()
       },
-    home: isLogin? const HomePage(): const LoginPage(),
+      home: isLogin? const HomePage(): const LoginPage(),
     );
   }
 }
-
 

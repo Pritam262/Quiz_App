@@ -80,6 +80,7 @@ Future<bool?> loginWithEmail(LoginRequestModel model) async {
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:quiz_app/models/get_request_response.dart';
 
 import '../../config.dart';
 import '../models/login_request_model.dart';
@@ -100,8 +101,8 @@ class APIService {
   static var client = http.Client();
 
   static Future<bool> loginWithEmail(
-    LoginRequestModel model,
-  ) async {
+      LoginRequestModel model,
+      ) async {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
     };
@@ -123,6 +124,7 @@ class APIService {
           response.body,
         ),
       );
+      getUserProfile();
 
       return true;
     } else {
@@ -135,8 +137,8 @@ class APIService {
 
   // SignIn with Email or RestAPI
   static Future<bool> registerWithEmail(
-    RegisterUserModel model,
-  ) async {
+      RegisterUserModel model,
+      ) async {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
     };
@@ -159,6 +161,7 @@ class APIService {
           response.body,
         ),
       );
+      getUserProfile();
 
       return true;
     } else {
@@ -184,11 +187,11 @@ class APIService {
     );
 
     if (response.statusCode == 200) {
-      print('User details: ${response.body}');
+      await SharedService.setUserProfile(
+        getUserResponseModel(response.body),
+      );
       return response.body;
     } else {
-      print(response.statusCode);
-      print(response.body);
       return "";
     }
   }

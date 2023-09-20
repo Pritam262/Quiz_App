@@ -1,8 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:quiz_app/models/register_user_model.dart';
 import 'package:quiz_app/screen/emailloginpage.dart';
+import 'package:quiz_app/services/auth.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/hex_color.dart';
+
+import '../config.dart';
 
 class EmailSigninPage extends StatefulWidget {
   const EmailSigninPage({super.key});
@@ -14,6 +18,7 @@ class EmailSigninPage extends StatefulWidget {
 class _EmailSigninPageState extends State<EmailSigninPage> {
   bool ispassHide = true;
   bool isconpassHide = true;
+  bool isApiCallProcess = false;
   late String? name;
   late String? email;
   late String? password;
@@ -201,8 +206,28 @@ class _EmailSigninPageState extends State<EmailSigninPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: FormHelper.submitButton("Register", ()async{
-                    // await signinWithEmail();
-                    Navigator.pushNamed(context, 'homepage');
+                    RegisterUserModel model = RegisterUserModel(
+                      name: name,
+                        email: email,
+                        password: password,
+                        conPassword:conPassword
+                    );
+                    APIService.registerWithEmail(model).then((response) {
+                      setState(() {
+                        isApiCallProcess= false;
+                      });
+                      if(response) {
+                        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/homepage',
+                              (route) => false,);
+                        // Navigator.pushReplacementNamed(context, 'homepage');
+                      }else{
+                        FormHelper.showSimpleAlertDialog(context, Config.appName, "Invalid UserName and Password", "OK", (){Navigator.of(context).pop();});
+                      }
+                    });
+                    // Navigator.pushNamed(context, 'homepage');
                   }, btnColor: HexColor('#283B71'), txtColor: Colors.white, borderRadius: 10),
                 ),
 

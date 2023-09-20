@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:quiz_app/models/get_request_response.dart';
 import 'package:quiz_app/models/login_request_model.dart';
 import 'package:quiz_app/screen/emailsigninpage.dart';
 import 'package:quiz_app/services/auth.dart';
@@ -25,6 +26,7 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
   late String? password;
   late TextEditingController emailController = TextEditingController();
   late TextEditingController passController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +193,6 @@ class _EmailLoginPageState extends State<EmailLoginPage> {
                           FormHelper.showSimpleAlertDialog(context, Config.appName, "Invalid UserName and Password", "OK", (){Navigator.of(context).pop();});
                         }
                       });
-                /*    }*/
                     // Navigator.pushNamed(context, 'homepage');
                   }, btnColor: HexColor('#283B71'), txtColor: Colors.white, borderRadius: 10),
                 ),
